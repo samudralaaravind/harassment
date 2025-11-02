@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
+const { generateToken } = require("./jwtservice");
 dotenv.config();
 
 // 12:00 -> 1675 (expiry is 30min)
@@ -66,4 +67,35 @@ const sendOtp = async (email, res) => {
   }
 };
 
-module.exports = { sendOtp };
+// { statusCode: 404, message: "", token?: }
+const verifyOtp = async (email, otp) => {
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return { statusCode: 404, message: "User not found" };
+    if (!user.otp)
+      return { statusCode: 404, message: "OTP not found, please send an OTP." };
+
+    const currentTimestamp = Math.floor(new Date().getTime() / 1000);
+    if (user.otpExpiry < currentTimestamp) {
+      return {
+        statusCode: 410,
+        message: "OTP expired, please send another one.",
+      };
+    }
+    if (user.otp !== otp) return { statusCode: 400, message: "Invalid OTP" };
+    // Valid otp: verification is success.
+    // 1. Delete OTP & otpExpiry from database.
+    // 2. Generate JWT with the user's details.
+
+    await User.updateOne(
+      { _id: user._id },
+      { $unset: { otp: "", otpExpiry: "" } }
+    );
+    const token = generateToken({ id: user._id, role: user.role });
+    return { statusCode: 200, message: "Login success", token };
+  } catch (error) {
+    return { statusCode: 500, message: error.message };
+  }
+};
+
+module.exports = { sendOtp, verifyOtp };
