@@ -128,13 +128,16 @@ Authorization: Bearer <JWT_TOKEN>
 Authorization: Bearer JWT_TOKEN
 ```
 
-**Response**
+**Responses**
+
+- **200 OK**
 
 ```json
 {
   "userInfo": {
     "fullName": "Aravind",
     "location": {
+      // Location can be null for the first time logged in user.
       "state": "Telangana",
       "district": "Hyderabad",
       "mandal": "Madhapur",
@@ -155,6 +158,11 @@ Authorization: Bearer JWT_TOKEN
 }
 ```
 
+- **401 Unauthorized**
+  - When the token sent in request header is expired or invalid.
+
+````json
+{ "message": "Invalid or expired token" }
 ---
 
 ## Location APIs
@@ -177,7 +185,7 @@ Authorization: Bearer JWT_TOKEN
     "village": false
   }
 }
-```
+````
 
 **Responses**
 
