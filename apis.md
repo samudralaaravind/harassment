@@ -63,7 +63,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
-### 2. Verify OTP (Citizen Login)
+### 2. Verify OTP (Acts as login API for both citizens and admins)
 
 **POST** `/auth/otp/verify`
 
@@ -116,43 +116,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
-### 3. Admin Login
-
-**POST** `/auth/login`
-
-- Logs in an admin using email + password.
-
-**Request**
-
-```json
-{
-  "email": "admin@example.com",
-  "password": "securePassword"
-}
-```
-
-**Responses**
-
-- **200 OK**
-
-```json
-{
-  "headers": {
-    "Set-Cookie": "JWT_TOKEN"
-  },
-  "message": "Logged in successfully"
-}
-```
-
-- **401 Unauthorized**
-
-```json
-{ "message": "Incorrect credentials" }
-```
-
----
-
-### 4. IAM - Get User Info
+### 4. iam - Get User Info
 
 **GET** `/iam`
 
