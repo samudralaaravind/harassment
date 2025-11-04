@@ -118,7 +118,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 ### 4. iam - Get User Info
 
-**GET** `/iam`
+**GET** `user/iam`
 
 - Returns basic user info and enabled routes based on role.
 
